@@ -6,27 +6,15 @@ with Calculator;
 with Ada.Text_IO; use Ada.Text_IO;
 
 procedure Main is
-   -- This initialization ensures these variables are initialized before being used
-   procedure Initialize is
-   begin
-      if MyCommandLine.Argument_Count >= 1 then
-         declare
-            PIN_Str : constant String := MyCommandLine.Argument(1);
-         begin
-            if PIN_Str'Length = 4 and then
-               (for all I in PIN_Str'Range => PIN_Str(I) >= '0' and PIN_Str(I) <= '9') then
-               Calculator.Initialize(PIN_Str);
-            else
-               Put_Line("Error: Master PIN must be a 4-digit number.");
-            end if;
-         end;
-      else
-         Put_Line("Error: Master PIN required.");
-      end if;
-   end Initialize;
 begin
-   -- Initialize the calculator
-   Initialize;
+   -- Check if a master PIN was provided
+   if MyCommandLine.Argument_Count < 1 then
+      Put_Line("Error: Master PIN required.");
+      return;
+   end if;
+
+   -- Initialize the calculator with the master PIN
+   Calculator.Initialize(MyCommandLine.Argument(1));
    
    -- Check if initialization was successful
    if not Calculator.Is_Initialized then
